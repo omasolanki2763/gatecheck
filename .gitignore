@@ -1,0 +1,36 @@
+# --- Secrets: never commit ---
+.env
+.env.*
+!.env.example
+
+# --- Corpus PDFs: not ours to redistribute; the manifest (URL, date, hash) is committed instead ---
+*.pdf
+corpus/
+
+# --- Local agent / editor settings (machine-specific permissions) ---
+.claude/settings.local.json
+.vscode/
+.idea/
+
+# --- Python build and tool caches ---
+__pycache__/
+*.py[cod]
+.venv/
+build/
+dist/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# --- Run outputs (traces, SQLite) are regenerated, not versioned ---
+runs/
+*.sqlite
+*.db
+
+# --- OS noise ---
+Thumbs.db
+.DS_Store

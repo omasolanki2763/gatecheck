@@ -13,7 +13,7 @@ The goal is a better workflow, not show:
 - one task at a time, done properly
 - tests, CI and a written style guide
 
-Facts checked today:
+Facts checked 2026-10-28 (pre-S1 state):
 - The project folder is not a git repo and sits in OneDrive.
 - `gh` is logged in as **omasolanki2763**, with `repo` and `workflow` scopes. The account has no
   GateCheck repo.
@@ -82,18 +82,18 @@ The README states exactly this process and does not claim the labels were human-
 | Docstring on every module, class and function: what it does, Args, Returns, Raises | PEP 257 + **Google Python Style Guide** docstrings | ruff `D` rules, `convention = "google"` |
 | Type hints everywhere | PEP 484 | `mypy --strict` |
 | Booleans read as questions (`is_eligible`, `has_pwd`). No vague names (`data`, `temp`, `obj`) | Om's global CLAUDE.md | review |
-| No magic numbers or strings: name them (`AGE_CUTOFF_DATE`, `FIRST_CLASS_MIN_PERCENT`) | Om's global CLAUDE.md | ruff `PLR2004` + review |
+| No magic numbers or strings: name them (`AGE_CUTOFF_DATE`, `FIRST_CLASS_MIN_PERCENT`) | Om's global CLAUDE.md | ruff `PLR2004` (numbers) + review (strings) |
 | A "why" comment on any line that is not self-evident. Comments are generous because Om must learn every module afterwards | Om's global CLAUDE.md | review |
 | Never swallow an exception; validate at the boundary (PDF text, LLM output, profile file), then trust the data inside | Om's global CLAUDE.md | ruff `BLE`, `S110` + review |
 | Small single-purpose modules; YAGNI | CLAUDE.md | review |
-| Every behaviour has a test; failing test first; ≥85% branch coverage | TDD, CLAUDE.md | `pytest --cov --cov-fail-under=85` in CI |
+| Every behaviour has a test; failing test first; ≥85% branch coverage | TDD, CLAUDE.md | `pytest --cov --cov-branch --cov-fail-under=85` in CI |
 | Review question: does this improve code health? Non-blocking points start with `Nit:` | Google eng-practices | review |
 
 ## 3. Phase S — setup (sequential; each step reviewed before the next)
 
 | # | Task | Owner | Reviewer |
 |---|---|---|---|
-| S1 | Copy folder → `C:\Users\omsol\dev\gatecheck` (original kept), `git init`, `.gitignore` (PDFs, `.env`, caches). Commit Phase 0 docs in their natural groups. Create the **public** repo and push. Branch protection on main: PR required, `ci` check required, linear history, no force push. Secret scanning + push protection on. Re-open the Orca agents in the new folder. | Claude | both agents check the repo, protection and `.gitignore` |
+| S1 | Copy folder → `C:\Users\omsol\dev\gatecheck` (original kept), `git init`, `.gitignore` (PDFs, `.env`, caches). Commit Phase 0 docs in their natural groups. Create the **public** repo and push. Branch protection on main: PR required, `ci` check required (deferred to S3), linear history, no force push. Secret scanning + push protection on. Re-open the Orca agents in the new folder. | Claude | both agents check the repo, protection and `.gitignore` |
 | S2 | `STYLE.md` (§2) | Antigravity | OpenCode, then Claude (critical: governs all code) |
 | S3 | `pyproject.toml` (uv), ruff/mypy/pytest config from STYLE.md, `.pre-commit-config.yaml` (ruff, ruff-format, mypy, gitleaks, large-file check), `.github/workflows/ci.yml`, `.github/dependabot.yml`, PR template, one smoke test | OpenCode | Antigravity, then Claude (critical: CI) |
 | S4 | Rewrite `TEAM.md` (remove Gujarat/OCR; Om gates → Claude; §1 workflow) and `.claude/rules/team-protocol.md`. Mark D-007 decided via D-009. Add `category_certificate_issue_date` to `docs/schemas.md`. Drop PROF-01 to an anonymised partial example. | Antigravity | OpenCode |

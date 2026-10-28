@@ -1,0 +1,96 @@
+{
+  "notice_id": "BARC-OCES-2026",
+  "candidate_id": "PROF-02-AGE-BOUNDARY-EXACT",
+  "final_verdict": "APPLY",
+  "status": "DRAFT_PENDING_OM_CHECK",
+  "criteria": [
+    {
+      "criterion_id": "CRIT-AGE-01",
+      "category": "AGE",
+      "condition_type": "THRESHOLD",
+      "description": "General category maximum age is 26 years and minimum is 18, both as on August 1 2026.",
+      "raw_quote": "4.3.  Maximum Age Limit (Maximum Age as on August 1, 2026) - (Refer Table -5) i. General category - 26 years, ... vii. The minimum age limit for all the applicants is 18 years as on August 1, 2026.",
+      "page_number": 17,
+      "folio": 17,
+      "folio_offset": 0,
+      "is_machine_evaluable": true,
+      "rule_parameters": {
+        "cutoff_date": "2026-08-01",
+        "min_age_years": 18,
+        "max_age_years": 26,
+        "category_relaxations": { "OBC_NCL": 3, "SC": 5, "ST": 5 },
+        "pwd_relaxation_years": 10,
+        "min_pwd_disability_percent": 40.0,
+        "pwd_stacks_with_category": true
+      },
+      "verdict": "MET",
+      "reason": "Born 2000-08-01, GENERAL, not PwD. Exact 26.0 years on 2026-08-01; inclusive boundary: 26 <= 26 -> MET."
+    },
+    {
+      "criterion_id": "CRIT-DEG-01",
+      "category": "QUALIFYING_DEGREE",
+      "condition_type": "DISJUNCTION",
+      "description": "B.E./B.Tech/B.Sc.(Engg)/5-yr Integrated M.Tech with 60% aggregate OR 6.0 CGPA in one of the eight engineering disciplines; CSE qualifies.",
+      "raw_quote": "i. B.E. / B.Tech./ B.Sc. (Engineering) / 5-year Integrated M. Tech.  with a minimum of 60%* aggregate marks (or minimum of 6.0 CGPA on a scale of 10 or equivalent) in one of the above mentioned eight engineering disciplines mentioned in Table-1a.",
+      "page_number": 12,
+      "folio": 12,
+      "folio_offset": 0,
+      "is_machine_evaluable": true,
+      "rule_parameters": {
+        "allowed_degrees": ["B.E.", "B.Tech", "B.Sc. (Engineering)", "5-year Integrated M. Tech."],
+        "allowed_disciplines": ["ME", "CH", "MT", "EE", "EC", "CS", "IN", "CE"],
+        "min_percentage": 60.0,
+        "min_cgpa_10": 6.0,
+        "cgpa_conversion_formula": null,
+        "requires_first_class": false,
+        "final_year_eligible": true
+      },
+      "verdict": "MET",
+      "reason": "B.Tech CSE 68% >= 60%, CGPA 7.2 >= 6.0, discipline CSE in allowed list -> MET (either arm)."
+    },
+    {
+      "criterion_id": "CRIT-GATE-01",
+      "category": "GATE_SCORE",
+      "condition_type": "THRESHOLD",
+      "description": "GATE-2024/2025/2026 score in the same GATE paper as the qualifying degree discipline.",
+      "raw_quote": "Applicants, who meets above mentioned educational criteria and also willing to be considered on the basis of a GATE score must have a valid GATE-2024 / GATE-2025 /GATE-2026 score in the same GATE paper/subject as the qualifying degree discipline.",
+      "page_number": 12,
+      "folio": 12,
+      "folio_offset": 0,
+      "is_machine_evaluable": true,
+      "rule_parameters": {
+        "valid_gate_years": [2024, 2025, 2026],
+        "allowed_paper_codes": ["CS"],
+        "min_gate_score": null,
+        "min_gate_marks": null,
+        "iit_btech_cgpa_exemption_threshold": null
+      },
+      "verdict": "MET",
+      "reason": "GATE-2025 CS; 2025 in valid years and paper CS matches qualifying degree discipline (CSE) -> MET. GATE route is a screening option in parallel to online exam; either way this candidate satisfies it."
+    },
+    {
+      "criterion_id": "CRIT-NAT-01",
+      "category": "NATIONALITY",
+      "condition_type": "THRESHOLD",
+      "description": "Applicant must be a citizen of India.",
+      "raw_quote": "4.4.  Nationality: Applicant must be a citizen of India.",
+      "page_number": 17,
+      "folio": 17,
+      "folio_offset": 0,
+      "is_machine_evaluable": true,
+      "rule_parameters": {
+        "is_indian_citizen_required": true
+      },
+      "verdict": "MET",
+      "reason": "is_indian_citizen=true -> MET."
+    }
+  ],
+  "provenance": {
+    "drafted_by": "opencode/big-pickle",
+    "checked_by": null,
+    "check_date": null,
+    "was_modified_by_om": null,
+    "original_draft_value": null,
+    "minutes_spent": null
+  }
+}

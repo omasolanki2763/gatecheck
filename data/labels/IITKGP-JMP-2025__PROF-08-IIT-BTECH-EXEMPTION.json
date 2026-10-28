@@ -1,0 +1,113 @@
+{
+  "notice_id": "IITKGP-JMP-2025",
+  "candidate_id": "PROF-08-IIT-BTECH-EXEMPTION",
+  "final_verdict": "APPLY",
+  "status": "DRAFT_PENDING_OM_CHECK",
+  "criteria": [
+    {
+      "criterion_id": "CRIT-DEG-01",
+      "category": "QUALIFYING_DEGREE",
+      "condition_type": "DISJUNCTION",
+      "description": "GE/OBC/EWS block: 60% marks OR CGPA 6.5 on 10-point scale; CGPA not converted to percentage when the institute reports CGPA.",
+      "raw_quote": "GE/OBC/EWS: Minimum of 60% marks (OR a CGPA of 6.5 on a 10 point scale) ... CGPA will not be converted to percentage if the degree awarding Institute provides marks in CGPA system. Their admission will be based on the CGPA mentioned in the transcript. No conversion of marks from percentage to CGPA will be accepted.",
+      "page_number": 69,
+      "folio": 63,
+      "folio_offset": -6,
+      "is_machine_evaluable": true,
+      "rule_parameters": {
+        "allowed_degrees": ["B.E.", "B.Tech", "Bachelor's Degree in Engineering/Technology/Architecture"],
+        "allowed_disciplines": null,
+        "min_percentage": 60.0,
+        "min_cgpa_10": 6.5,
+        "cgpa_conversion_formula": null,
+        "requires_first_class": false,
+        "final_year_eligible": true
+      },
+      "verdict": "MET",
+      "reason": "GENERAL candidate, GE/OBC/EWS block applies. Percentage 82.0 >= 60 -> MET (either arm of the disjunction)."
+    },
+    {
+      "criterion_id": "CRIT-DEG-02",
+      "category": "QUALIFYING_DEGREE",
+      "condition_type": "DISJUNCTION",
+      "description": "SC/ST/PwD block: 55% marks OR CGPA 6.0 on 10-point scale. Recorded for schema completeness; this block is NOT scored for a GENERAL candidate (per guide worked example C, no NOT_MET is produced from a block the candidate is not in).",
+      "raw_quote": "SC/ST/PwD: Minimum of 55% marks (OR a CGPA of 6.0 on a 10 point scale)",
+      "page_number": 69,
+      "folio": 63,
+      "folio_offset": -6,
+      "is_machine_evaluable": true,
+      "rule_parameters": {
+        "allowed_degrees": null,
+        "allowed_disciplines": null,
+        "min_percentage": 55.0,
+        "min_cgpa_10": 6.0,
+        "cgpa_conversion_formula": null,
+        "requires_first_class": false,
+        "final_year_eligible": true
+      },
+      "verdict": null,
+      "not_scored_for_candidate": true,
+      "reason": "Candidate is GENERAL, not SC/ST/PwD; this category-block criterion is not scored and does not contribute to aggregation."
+    },
+    {
+      "criterion_id": "CRIT-GATE-01",
+      "category": "GATE_SCORE",
+      "condition_type": "THRESHOLD",
+      "description": "Applicants must qualify in a GATE paper appropriate to the discipline of the qualifying degree. The IIT B.Tech CGPA >= 8.0 direct-admission route (CRIT-GATE-02) exempts qualifying in GATE.",
+      "raw_quote": "Applicants must qualify in a GATE paper appropriate to the discipline of their qualifying degree if a GATE paper is available in such a discipline. Only for those disciplines where there is no relevant GATE paper, XE/XL/XH papers of the GATE examination is applicable.",
+      "page_number": 69,
+      "folio": 63,
+      "folio_offset": -6,
+      "is_machine_evaluable": true,
+      "rule_parameters": {
+        "valid_gate_years": [2024, 2025],
+        "allowed_paper_codes": ["CS", "DA", "EC", "EE"],
+        "min_gate_score": null,
+        "min_gate_marks": null,
+        "iit_btech_cgpa_exemption_threshold": 8.0
+      },
+      "verdict": "MET",
+      "reason": "No GATE record exists, but the exemption in CRIT-GATE-02 holds (IIT B.Tech CGPA 8.4 >= 8.0), so GATE-01 is forced to MET with reason EXEMPTED_BY_CRIT-GATE-02."
+    },
+    {
+      "criterion_id": "CRIT-GATE-02",
+      "category": "GATE_SCORE",
+      "condition_type": "EXEMPTION_RULE",
+      "description": "B.Tech students graduated/graduating (final semester) from IITs having a CGPA of 8.00 or above (out of 10) are eligible for direct admission without having to appear in GATE.",
+      "raw_quote": "B. Tech students graduated / graduating (final semester) from IITs having a CGPA 8.00 or above (out of 10) are eligible for direct admission without having to appear in either GATE.",
+      "page_number": 70,
+      "folio": 64,
+      "folio_offset": -6,
+      "is_machine_evaluable": true,
+      "rule_parameters": {
+        "iit_btech_cgpa_exemption_threshold": 8.0
+      },
+      "verdict": "MET",
+      "reason": "is_iit_graduate=true and CGPA 8.4 >= 8.0 -> exemption holds; overrides CRIT-GATE-01 to MET."
+    },
+    {
+      "criterion_id": "CRIT-NAT-01",
+      "category": "NATIONALITY",
+      "condition_type": "THRESHOLD",
+      "description": "Admission to the Joint M.Tech/MCP-Ph.D programme is open to all Indian nationals.",
+      "raw_quote": "Admission to the Joint M.Tech./MCP–Ph.D programme of the Institute is open to all Indian Nationals",
+      "page_number": 69,
+      "folio": 63,
+      "folio_offset": -6,
+      "is_machine_evaluable": true,
+      "rule_parameters": {
+        "is_indian_citizen_required": true
+      },
+      "verdict": "MET",
+      "reason": "is_indian_citizen=true -> MET."
+    }
+  ],
+  "provenance": {
+    "drafted_by": "opencode/big-pickle",
+    "checked_by": null,
+    "check_date": null,
+    "was_modified_by_om": null,
+    "original_draft_value": null,
+    "minutes_spent": null
+  }
+}

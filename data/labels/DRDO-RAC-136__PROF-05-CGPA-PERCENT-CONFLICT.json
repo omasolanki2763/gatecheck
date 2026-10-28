@@ -1,0 +1,106 @@
+{
+  "notice_id": "DRDO-RAC-136",
+  "candidate_id": "PROF-05-CGPA-PERCENT-CONFLICT",
+  "final_verdict": "SKIP",
+  "status": "DRAFT_PENDING_OM_CHECK",
+  "criteria": [
+    {
+      "criterion_id": "CRIT-AGE-01",
+      "category": "AGE",
+      "condition_type": "THRESHOLD",
+      "description": "Age must not exceed 28 years for UR/EWS, 31 for OBC-NCL, 33 for SC/ST, as on closing date.",
+      "raw_quote": "1.2.     AGE LIMIT  FOR CANDIDATES (as on closing date of advertisement) ... i)    Un Reserved (UR) /EWS  28 years  ii)   OBC (Non-creamy layer)  31 years  iii) SC/ST   33 years",
+      "page_number": 3,
+      "folio": 2,
+      "folio_offset": -1,
+      "is_machine_evaluable": false,
+      "rule_parameters": null,
+      "verdict": "NEEDS_REVIEW",
+      "reason": "Closing date is defined only as 21 days from publication in Employment News (line: 'Closing date: 21 days from the date of publication of advertisement in the Employment News'); no absolute date appears in the PDF, so age-at-cutoff cannot be pinned from the document alone -> NEEDS_REVIEW."
+    },
+    {
+      "criterion_id": "CRIT-DEG-01",
+      "category": "QUALIFYING_DEGREE",
+      "condition_type": "THRESHOLD",
+      "description": "At least First Class Bachelor's Degree in Engineering or Technology in Computer Science & Engg (First Class condition applies to DRDO posts).",
+      "raw_quote": "Essential Qualification(EQ): At least First Class (condition of First Class does not apply to DST posts) Bachelor's Degree in Engineering or Technology in Computer Science & Engg from a recognized university or equivalent.",
+      "page_number": 1,
+      "folio": 0,
+      "folio_offset": -1,
+      "is_machine_evaluable": true,
+      "rule_parameters": {
+        "allowed_degrees": ["B.E.", "B.Tech", "Bachelor's Degree in Engineering or Technology"],
+        "allowed_disciplines": ["Computer Science/ Engg/ Technology", "Computer Science and Engg./Technology", "Computer Science/Engg & Info Tech", "Computer Science & System Engg", "Software Engg/ Technology", "Computer Science & Automation Engg/ Tech", "Information Technology", "Computer Science/Technology & Informatics Engg", "Information Science & Engg/Technology", "Computer & Communication Engg", "Computer Networking"],
+        "min_percentage": 60.0,
+        "min_cgpa_10": 6.75,
+        "cgpa_conversion_formula": null,
+        "requires_first_class": true,
+        "final_year_eligible": true
+      },
+      "verdict": "NOT_MET",
+      "reason": "First Class required. Candidate is_first_class=false; percentage 56.5% < 60% (equivalence floor) and CGPA 6.4 < 6.75 (AICTE equivalence) on all arms -> NOT_MET."
+    },
+    {
+      "criterion_id": "CRIT-GATE-01",
+      "category": "GATE_SCORE",
+      "condition_type": "THRESHOLD",
+      "description": "Valid GATE-2017/2018/2019 score in Computer Science & Information Technology (paper CS) for Part-I disciplines.",
+      "raw_quote": "Category I:  Candidates should possess the requisite Essential Qualification (EQ) along with a valid GATE-2017/2018/2019 Qualification.",
+      "page_number": 3,
+      "folio": 2,
+      "folio_offset": -1,
+      "is_machine_evaluable": true,
+      "rule_parameters": {
+        "valid_gate_years": [2017, 2018, 2019],
+        "allowed_paper_codes": ["CS"],
+        "min_gate_score": null,
+        "min_gate_marks": null,
+        "iit_btech_cgpa_exemption_threshold": null
+      },
+      "verdict": "NOT_MET",
+      "reason": "GATE-2025 CS record; 2025 is not in [2017, 2018, 2019] -> NOT_MET."
+    },
+    {
+      "criterion_id": "CRIT-GATE-02",
+      "category": "GATE_SCORE",
+      "condition_type": "EXEMPTION_RULE",
+      "description": "Category II: EQ degree from IITs/NITs with minimum aggregate 80% marks exempts GATE for Part-I disciplines.",
+      "raw_quote": "Category II:  Candidates should possess the requisite Essential Qualification (EQ) from IITs/NITs with minimum aggregate 80% marks (Category II eligibility criteria is not applicable for GAETEC posts).",
+      "page_number": 3,
+      "folio": 2,
+      "folio_offset": -1,
+      "is_machine_evaluable": true,
+      "rule_parameters": {
+        "allowed_degrees": ["IIT/NIT EQ degree"],
+        "min_percentage": 80.0,
+        "iit_btech_cgpa_exemption_threshold": null
+      },
+      "verdict": "NOT_MET",
+      "reason": "Exemption does not hold: candidate is not an IIT/NIT graduate (is_iit_graduate=false) -> CRIT-GATE-01 is NOT overridden; GATE remains NOT_MET."
+    },
+    {
+      "criterion_id": "CRIT-NAT-01",
+      "category": "NATIONALITY",
+      "condition_type": "THRESHOLD",
+      "description": "Only Indian nationals may apply.",
+      "raw_quote": "1.3. NATIONALITY Only Indian Nationals need apply.",
+      "page_number": 3,
+      "folio": 2,
+      "folio_offset": -1,
+      "is_machine_evaluable": true,
+      "rule_parameters": {
+        "is_indian_citizen_required": true
+      },
+      "verdict": "MET",
+      "reason": "is_indian_citizen=true -> MET."
+    }
+  ],
+  "provenance": {
+    "drafted_by": "opencode/big-pickle",
+    "checked_by": null,
+    "check_date": null,
+    "was_modified_by_om": null,
+    "original_draft_value": null,
+    "minutes_spent": null
+  }
+}

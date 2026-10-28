@@ -1,0 +1,308 @@
+[
+  {
+    "candidate_id": "PROF-02-AGE-BOUNDARY-EXACT",
+    "full_name": "Aarav Sharma",
+    "dob": "2000-08-01",
+    "category": "GENERAL",
+    "is_indian_citizen": true,
+    "is_pwd": false,
+    "pwd_disability_percent": 0.0,
+    "pwd_category": "NONE",
+    "is_iit_graduate": false,
+    "qualifications": [
+      {
+        "degree_title": "B.Tech",
+        "discipline": "Computer Science & Engineering",
+        "percentage": 68.0,
+        "cgpa": 7.2,
+        "cgpa_scale": 10.0,
+        "university_conversion_formula": null,
+        "is_first_class": true,
+        "is_appearing": false,
+        "expected_completion_date": null
+      }
+    ],
+    "gate_records": [
+      {
+        "year": 2025,
+        "paper_code": "CS",
+        "score": 520,
+        "marks": 48.0,
+        "all_india_rank": 3200,
+        "is_qualified": true
+      }
+    ],
+    "experience_months": 12
+  },
+  {
+    "candidate_id": "PROF-03-RELAXATION-STACKING",
+    "full_name": "Pooja Meghwal",
+    "dob": "1985-08-01",
+    "category": "SC",
+    "is_indian_citizen": true,
+    "is_pwd": true,
+    "pwd_disability_percent": 45.0,
+    "pwd_category": "LOCOMOTOR",
+    "is_iit_graduate": false,
+    "qualifications": [
+      {
+        "degree_title": "B.E.",
+        "discipline": "Computer Science & Engineering",
+        "percentage": 58.0,
+        "cgpa": 6.2,
+        "cgpa_scale": 10.0,
+        "university_conversion_formula": null,
+        "is_first_class": false,
+        "is_appearing": false,
+        "expected_completion_date": null
+      }
+    ],
+    "gate_records": [
+      {
+        "year": 2025,
+        "paper_code": "CS",
+        "score": 360,
+        "marks": 32.0,
+        "all_india_rank": 8500,
+        "is_qualified": true
+      }
+    ],
+    "experience_months": 24
+  },
+  {
+    "candidate_id": "PROF-04-FINAL-YEAR-APPEARING",
+    "full_name": "Rohan Verma",
+    "dob": "2004-06-15",
+    "category": "OBC_NCL",
+    "is_indian_citizen": true,
+    "is_pwd": false,
+    "pwd_disability_percent": 0.0,
+    "pwd_category": "NONE",
+    "is_iit_graduate": false,
+    "qualifications": [
+      {
+        "degree_title": "B.Tech",
+        "discipline": "Computer Science & Engineering",
+        "percentage": null,
+        "cgpa": 8.1,
+        "cgpa_scale": 10.0,
+        "university_conversion_formula": null,
+        "is_first_class": null,
+        "is_appearing": true,
+        "expected_completion_date": "2026-07-31"
+      }
+    ],
+    "gate_records": [
+      {
+        "year": 2026,
+        "paper_code": "CS",
+        "score": 450,
+        "marks": 41.0,
+        "all_india_rank": 4100,
+        "is_qualified": true
+      }
+    ],
+    "experience_months": 0
+  },
+  {
+    "candidate_id": "PROF-05-CGPA-PERCENT-CONFLICT",
+    "full_name": "Kavita Nair",
+    "dob": "2002-11-20",
+    "category": "GENERAL",
+    "is_indian_citizen": true,
+    "is_pwd": false,
+    "pwd_disability_percent": 0.0,
+    "pwd_category": "NONE",
+    "is_iit_graduate": false,
+    "qualifications": [
+      {
+        "degree_title": "B.Tech",
+        "discipline": "Computer Science & Engineering",
+        "percentage": 56.5,
+        "cgpa": 6.4,
+        "cgpa_scale": 10.0,
+        "university_conversion_formula": "(CGPA - 0.75) * 10",
+        "is_first_class": false,
+        "is_appearing": false,
+        "expected_completion_date": null
+      }
+    ],
+    "gate_records": [
+      {
+        "year": 2025,
+        "paper_code": "CS",
+        "score": 480,
+        "marks": 44.0,
+        "all_india_rank": 3900,
+        "is_qualified": true
+      }
+    ],
+    "experience_months": 6
+  },
+  {
+    "candidate_id": "PROF-06-BRANCH-EQUIVALENCE",
+    "full_name": "Siddharth Sen",
+    "dob": "2001-09-10",
+    "category": "GENERAL",
+    "is_indian_citizen": true,
+    "is_pwd": false,
+    "pwd_disability_percent": 0.0,
+    "pwd_category": "NONE",
+    "is_iit_graduate": false,
+    "qualifications": [
+      {
+        "degree_title": "B.Tech",
+        "discipline": "Information Technology",
+        "percentage": 76.0,
+        "cgpa": 8.0,
+        "cgpa_scale": 10.0,
+        "university_conversion_formula": null,
+        "is_first_class": true,
+        "is_appearing": false,
+        "expected_completion_date": null
+      }
+    ],
+    "gate_records": [
+      {
+        "year": 2026,
+        "paper_code": "CS",
+        "score": 540,
+        "marks": 50.5,
+        "all_india_rank": 2600,
+        "is_qualified": true
+      }
+    ],
+    "experience_months": 0
+  },
+  {
+    "candidate_id": "PROF-07-EXPIRED-GATE-YEAR",
+    "full_name": "Deepak Patel",
+    "dob": "1999-04-12",
+    "category": "GENERAL",
+    "is_indian_citizen": true,
+    "is_pwd": false,
+    "pwd_disability_percent": 0.0,
+    "pwd_category": "NONE",
+    "is_iit_graduate": false,
+    "qualifications": [
+      {
+        "degree_title": "B.Tech",
+        "discipline": "Computer Science & Engineering",
+        "percentage": 70.0,
+        "cgpa": 7.4,
+        "cgpa_scale": 10.0,
+        "university_conversion_formula": null,
+        "is_first_class": true,
+        "is_appearing": false,
+        "expected_completion_date": null
+      }
+    ],
+    "gate_records": [
+      {
+        "year": 2022,
+        "paper_code": "CS",
+        "score": 600,
+        "marks": 56.0,
+        "all_india_rank": 1400,
+        "is_qualified": true
+      }
+    ],
+    "experience_months": 36
+  },
+  {
+    "candidate_id": "PROF-08-IIT-BTECH-EXEMPTION",
+    "full_name": "Ananya Mukherjee",
+    "dob": "2003-01-25",
+    "category": "GENERAL",
+    "is_indian_citizen": true,
+    "is_pwd": false,
+    "pwd_disability_percent": 0.0,
+    "pwd_category": "NONE",
+    "is_iit_graduate": true,
+    "qualifications": [
+      {
+        "degree_title": "B.Tech",
+        "discipline": "Computer Science & Engineering",
+        "percentage": 82.0,
+        "cgpa": 8.4,
+        "cgpa_scale": 10.0,
+        "university_conversion_formula": null,
+        "is_first_class": true,
+        "is_appearing": false,
+        "expected_completion_date": null
+      }
+    ],
+    "gate_records": [],
+    "experience_months": 0
+  },
+  {
+    "candidate_id": "PROF-09-NON-INDIAN-CITIZEN",
+    "full_name": "Tenzin Dorji",
+    "dob": "2002-05-18",
+    "category": "GENERAL",
+    "is_indian_citizen": false,
+    "is_pwd": false,
+    "pwd_disability_percent": 0.0,
+    "pwd_category": "NONE",
+    "is_iit_graduate": false,
+    "qualifications": [
+      {
+        "degree_title": "B.Tech",
+        "discipline": "Computer Science & Engineering",
+        "percentage": 78.0,
+        "cgpa": 8.2,
+        "cgpa_scale": 10.0,
+        "university_conversion_formula": null,
+        "is_first_class": true,
+        "is_appearing": false,
+        "expected_completion_date": null
+      }
+    ],
+    "gate_records": [
+      {
+        "year": 2026,
+        "paper_code": "CS",
+        "score": 580,
+        "marks": 54.0,
+        "all_india_rank": 1800,
+        "is_qualified": true
+      }
+    ],
+    "experience_months": 0
+  },
+  {
+    "candidate_id": "PROF-10-SUB-BENCHMARK-PWD",
+    "full_name": "Vikram Rathore",
+    "dob": "1997-03-30",
+    "category": "GENERAL",
+    "is_indian_citizen": true,
+    "is_pwd": true,
+    "pwd_disability_percent": 35.0,
+    "pwd_category": "LOCOMOTOR",
+    "is_iit_graduate": false,
+    "qualifications": [
+      {
+        "degree_title": "B.Tech",
+        "discipline": "Computer Science & Engineering",
+        "percentage": 65.0,
+        "cgpa": 6.9,
+        "cgpa_scale": 10.0,
+        "university_conversion_formula": null,
+        "is_first_class": true,
+        "is_appearing": false,
+        "expected_completion_date": null
+      }
+    ],
+    "gate_records": [
+      {
+        "year": 2025,
+        "paper_code": "CS",
+        "score": 420,
+        "marks": 38.5,
+        "all_india_rank": 5100,
+        "is_qualified": true
+      }
+    ],
+    "experience_months": 18
+  }
+]

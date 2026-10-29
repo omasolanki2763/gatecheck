@@ -6,6 +6,7 @@
 # --- Corpus PDFs: not ours to redistribute; the manifest (URL, date, hash) is committed instead ---
 *.pdf
 corpus/
+data/pdfs/
 
 # --- Local agent / editor settings (machine-specific permissions) ---
 .claude/settings.local.json

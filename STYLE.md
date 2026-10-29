@@ -25,8 +25,8 @@ def is_age_eligible(age_years: int, cutoff_age: int) -> bool:
 - **Enforced by**: `ruff format` and `ruff check` (`E`, `W`, `F`, `I`, `N`). Sources: [PEP 8](https://peps.python.org/pep-0008/) (checked 2026-10-29), [Ruff Rules](https://docs.astral.sh/ruff/rules/) (checked 2026-10-29).
 
 ### 2. Docstrings on Modules, Classes, and Functions
-- **Rule**: Every module, class, and function must have a docstring following Google Python Style Guide convention detailing what it does, `Args:`, `Returns:`, and `Raises:` (if any).
-- **Why**: Om must understand and defend every module in interviews. Docstrings ensure every interface is self-documenting.
+- **Rule**: Every module, class, and function must have a docstring following Google Python Style Guide convention detailing what it does, with sections required when applicable (`Args:` when parameters exist, `Returns:` when returning a value, `Raises:` when raising an exception; do not document non-existent raises).
+- **Why**: Om must understand and defend every module in interviews. Docstrings ensure every interface is self-documenting without false documentation.
 - **Bad**:
 ```python
 def compute_age(dob, ref):
@@ -195,6 +195,7 @@ def load_notice_text(file_path: Path) -> str:
 The following configurations must be mirrored directly into `pyproject.toml` during Phase S3:
 
 ```toml
+# Phase S3 requirement: Pin ruff version in pyproject.toml / uv.lock so preview behavior remains reproducible.
 [tool.ruff]
 line-length = 100
 target-version = "py313"

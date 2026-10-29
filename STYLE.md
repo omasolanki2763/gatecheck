@@ -44,8 +44,10 @@ def compute_age_years(birth_date: date, reference_date: date) -> int:
     Returns:
         Age in completed whole years.
     """
-    return reference_date.year - birth_date.year - (
-        (reference_date.month, reference_date.day) < (birth_date.month, birth_date.day)
+    return (
+        reference_date.year
+        - birth_date.year
+        - ((reference_date.month, reference_date.day) < (birth_date.month, birth_date.day))
     )
 ```
 - **Enforced by**: Ruff `D` rules (`convention = "google"`) enforce formatting; section completeness (`Args:`, `Returns:`, `Raises:`) is enforced via peer review (since Ruff D417 verifies arguments only after an `Args:` header is present). Sources: [PEP 257](https://peps.python.org/pep-0257/) (checked 2026-10-29), [Google Docstrings](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings) (checked 2026-10-29).
@@ -150,7 +152,7 @@ except pydantic.ValidationError as err:
 - **Enforced by**: Peer code review in Orca. Source: [Google Code Review Standard](https://google.github.io/eng-practices/review/reviewer/standard.html) (checked 2026-10-29).
 
 ### 11. Portable File I/O & Path Handling
-- **Rule**: Always pass explicit `encoding="utf-8"` to `open()`, `Path.read_text()`, and `Path.write_text()`. Always use `pathlib.Path` instead of raw string concatenation or `os.path`.
+- **Rule**: Always pass explicit `encoding="utf-8"` to text-mode `open()`, `Path.read_text()`, and `Path.write_text()` (never pass encoding in binary mode). Always use `pathlib.Path` instead of raw string concatenation or `os.path`.
 - **Why**: Windows defaults to legacy code pages (e.g. `cp1252`), which silently corrupt or crash on non-ASCII characters such as rupee signs (`₹`), en-dashes (`–`), or accented names in official notices during cross-platform CI (Windows + Ubuntu).
 - **Bad**:
 ```python
@@ -171,7 +173,7 @@ def load_notice_text(file_path: Path) -> str:
     """
     return file_path.read_text(encoding="utf-8")
 ```
-- **Enforced by**: Ruff `PLW1514` (unspecified-encoding; enabled via `preview = true` + `explicit-preview-rules = true`) + peer review. Source: [Ruff PLW1514](https://docs.astral.sh/ruff/rules/unspecified-encoding/) (checked 2026-10-29).
+- **Enforced by**: Ruff `PLW1514` (encoding; enabled via `preview = true` + `explicit-preview-rules = true`) + peer review (Path usage). Source: [Ruff PLW1514](https://docs.astral.sh/ruff/rules/unspecified-encoding/) (checked 2026-10-29).
 
 ---
 

@@ -1,0 +1,172 @@
+# GateCheck Python Style Guide (`STYLE.md`)
+
+Governs all Python code, tests, and reviews in GateCheck. Followed by all agents and Om. Enforced via CI in Phase S3.
+
+## 1. Core Code Rules
+
+### 1. Layout, Naming, Imports, Line Length
+- **Rule**: Follow PEP 8 with line length 100. Use standard naming: `snake_case` functions/variables, `PascalCase` classes, `UPPER_CASE` constants. Imports grouped and sorted.
+- **Why**: Consistent formatting eliminates bikeshedding and lets reviewers focus on business logic rather than whitespace or syntax choices.
+- **Bad**: `def checkAge(x,y): return x>=y`
+- **Good**: `def is_age_eligible(age_years: int, cutoff_age: int) -> bool: return age_years <= cutoff_age`
+- **Enforced by**: `ruff format` and `ruff check` (`E`, `W`, `F`, `I`, `N`). Sources: [PEP 8](https://peps.python.org/pep-0008/) (checked 2026-10-29), [Ruff Rules](https://docs.astral.sh/ruff/rules/) (checked 2026-10-29).
+
+### 2. Docstrings on Modules, Classes, and Functions
+- **Rule**: Every module, class, and function must have a docstring following Google Python Style Guide convention detailing what it does, `Args:`, `Returns:`, and `Raises:`.
+- **Why**: Om must understand and defend every module in interviews. Docstrings ensure every interface is self-documenting.
+- **Bad**:
+```python
+def compute_age(dob, ref):
+    return (ref - dob).days // 365
+```
+- **Good**:
+```python
+def compute_age_years(birth_date: date, reference_date: date) -> int:
+    """Computes candidate age in completed whole years on the cutoff date.
+
+    Args:
+        birth_date: Candidate date of birth.
+        reference_date: Cutoff reference date specified in the notification.
+
+    Returns:
+        Age in completed whole years.
+    """
+    return reference_date.year - birth_date.year - (
+        (reference_date.month, reference_date.day) < (birth_date.month, birth_date.day)
+    )
+```
+- **Enforced by**: Ruff `D` rules with `convention = "google"`. Sources: [PEP 257](https://peps.python.org/pep-0257/) (checked 2026-10-29), [Google Docstrings](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings) (checked 2026-10-29).
+
+### 3. Type Hints Everywhere
+- **Rule**: All function signatures, parameters, return types, and class attributes must have explicit type annotations. No untyped `Any` without a documented reason.
+- **Why**: Static typing prevents `NoneType` bugs, enables static verification in CI, and self-documents data contracts.
+- **Bad**: `def parse_score(data): return data["score"]`
+- **Good**: `def parse_gate_score(raw_profile: dict[str, Any]) -> int | None:`
+- **Enforced by**: `mypy --strict`. Sources: [PEP 484](https://peps.python.org/pep-0484/) (checked 2026-10-29), [Mypy Strict](https://mypy.readthedocs.io/en/stable/command_line.html#cmdoption-mypy-strict) (checked 2026-10-29).
+
+### 4. Booleans Read as Questions & Explicit Naming
+- **Rule**: Boolean variables and functions must read as questions (`is_eligible`, `has_pwd`, `can_apply`). Never use vague variable names (`data`, `temp`, `obj`, `res`).
+- **Why**: Booleans reading as questions avoid inverted logic errors; explicit names mean anyone reading code understands what entity is handled.
+- **Bad**: `pwd = True; temp = verify(data)`
+- **Good**: `has_pwd_concession = True; is_verified = verify_qualification(profile)`
+- **Enforced by**: Peer code review. Source: Om's project brief (`CLAUDE.md`).
+
+### 5. No Magic Numbers or Strings
+- **Rule**: Extract numeric and string literals into named constants or enums (`AGE_CUTOFF_DATE`, `FIRST_CLASS_MIN_PERCENT`).
+- **Why**: Named constants clarify business intent; raw values look arbitrary and make recruitment policy updates error-prone.
+- **Bad**: `if percentage >= 60.0 and age > 28:`
+- **Good**: `if percentage >= FIRST_CLASS_MIN_PERCENT and age_years > MAX_GENERAL_AGE_LIMIT:`
+- **Enforced by**: Ruff `PLR2004` (numbers) + peer code review (strings). Source: [Ruff PLR2004](https://docs.astral.sh/ruff/rules/magic-value-comparison/) (checked 2026-10-29).
+
+### 6. "Why" Comments on Non-Obvious Logic
+- **Rule**: Include comments explaining *why* a calculation or rule branch is taken, citing the specific brochure clause or policy reason.
+- **Why**: Code explains *how*; comments explain *why*. Om must be able to explain the reasoning behind every rule to recruiters.
+- **Bad**:
+```python
+# add 3 years
+max_age += 3
+```
+- **Good**:
+```python
+# OBC-NCL candidates receive a 3-year age relaxation per DRDO Advt 136 §1.2
+max_eligible_age = GENERAL_MAX_AGE + OBC_AGE_RELAXATION_YEARS
+```
+- **Enforced by**: Peer code review. Source: Om's project brief (`CLAUDE.md`).
+
+### 7. Never Swallow Exceptions & Validate at Boundaries
+- **Rule**: Never use bare `except:` or `except Exception: pass`. Catch specific exceptions or log with context. Validate data at ingestion boundaries (PDF text, LLM output, profile JSON), then trust typed internal models.
+- **Why**: Silently ignored errors mask failures and corrupt downstream memo verdicts. Boundary validation ensures bugs are caught early.
+- **Bad**:
+```python
+try:
+    criteria = json.loads(llm_output)
+except Exception:
+    pass
+```
+- **Good**:
+```python
+try:
+    return ExtractedCriteria.model_validate_json(llm_output)
+except pydantic.ValidationError as err:
+    raise ExtractionValidationError(f"Invalid criteria payload: {err}") from err
+```
+- **Enforced by**: Ruff `BLE001` (blind except), `S110` (try-except-pass) + peer review. Sources: [Ruff BLE](https://docs.astral.sh/ruff/rules/#flake8-blind-except-ble) (checked 2026-10-29), [Ruff S110](https://docs.astral.sh/ruff/rules/try-except-pass/) (checked 2026-10-29).
+
+### 8. Small Single-Purpose Modules (YAGNI)
+- **Rule**: Keep modules small (~200 lines max where practical), adhering strictly to single-responsibility. Do not build speculative abstractions.
+- **Why**: Modular single-purpose code is easy to unit-test, review in Orca, and explain in technical interviews.
+- **Bad**: Monolithic `engine.py` doing PDF parsing, scoring arithmetic, SQLite inserts, and prompt generation.
+- **Good**: Separate modules: `gatecheck/ingest/pdf.py`, `gatecheck/scoring/age.py`, `gatecheck/storage/db.py`.
+- **Enforced by**: Peer code review. Source: `CLAUDE.md`.
+
+### 9. Test-Driven Development (TDD) & ≥85% Branch Coverage
+- **Rule**: Every behaviour must have a test written first (red -> green -> refactor). Branch coverage must remain ≥85% across all code.
+- **Why**: Writing tests first guarantees testability, catches edge cases before commit, and prevents untested regression paths.
+- **Bad**: Writing implementation and backfilling a superficial smoke test.
+- **Good**: Write test for 28th-birthday cutoff -> confirm failure -> write minimum logic -> confirm pass -> commit.
+- **Enforced by**: `pytest --cov --cov-branch --cov-fail-under=85` in CI. Source: [pytest-cov](https://pytest-cov.readthedocs.io/en/latest/config.html) (checked 2026-10-29).
+
+### 10. Code Health & Review Standards
+- **Rule**: Every review must evaluate whether the change improves overall code health. Reviewers must provide technical justifications. Non-blocking suggestions start with `Nit:`.
+- **Why**: Ensures code quality continually improves without stalling delivery on subjective style preferences.
+- **Bad**: "I don't like this structure. Change it."
+- **Good**: "Nit: Rename `lim` to `age_limit` to follow the explicit naming convention in STYLE.md §1.4."
+- **Enforced by**: Peer code review in Orca. Source: [Google Code Review Standard](https://google.github.io/eng-practices/review/reviewer/standard.html) (checked 2026-10-29).
+
+---
+
+## 2. Git & Testing Conventions
+
+### Git Rules
+- **Commit Messages**: Conventional Commits only (`feat:`, `fix:`, `test:`, `docs:`, `refactor:`, `ci:`, `chore:`). One logical change per commit.
+- **Branch Naming**: `task/T-0xx-name` (or `task/Sxx-name`).
+- **Merge Method**: Rebase merge only (`gh pr merge --rebase`). Linear history on `main` is strictly enforced.
+- **Attribution**: Commits must be authored by active git identity (`omasolanki2763`). Never add `Co-Authored-By` lines.
+
+### Test Rules
+- **File & Function Naming**: Tests live in `tests/test_<module>.py`. Test functions named `test_<function_or_scenario>_<expected_outcome>()` (e.g. `test_age_on_cutoff_date_returns_met()`).
+- **TDD Workflow**: Failing test first -> minimal passing implementation -> refactor and push.
+- **Fixtures**: Use deterministic recorded replay fixtures (D-023) for regression tests; live API calls are opt-in smoke tests only.
+
+---
+
+## 3. Copy-Ready Tool Configurations (Phase S3 Reference)
+
+The following configurations must be mirrored directly into `pyproject.toml` during Phase S3:
+
+```toml
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # Pyflakes
+    "I",      # isort
+    "N",      # pep8-naming
+    "D",      # pydocstyle
+    "UP",     # pyupgrade
+    "B",      # flake8-bugbear
+    "BLE",    # flake8-blind-except
+    "S",      # flake8-bandit
+    "PLR2004" # magic-value-comparison
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]  # S101 allows standard pytest assert statements in tests
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=gatecheck --cov-branch --cov-fail-under=85"
+```

@@ -8,7 +8,12 @@ Governs all Python code, tests, and reviews in GateCheck. Followed by all agents
 - **Rule**: Follow PEP 8 with line length 100. Use standard naming: `snake_case` functions/variables, `PascalCase` classes, `UPPER_CASE` constants. Imports grouped and sorted.
 - **Why**: Consistent formatting eliminates bikeshedding and lets reviewers focus on business logic rather than whitespace or syntax choices.
 - **Bad**: `def checkAge(x,y): return x>=y`
-- **Good**: `def is_age_eligible(age_years: int, cutoff_age: int) -> bool: return age_years <= cutoff_age`
+- **Good**:
+```python
+def is_age_eligible(age_years: int, cutoff_age: int) -> bool:
+    """Checks whether the applicant age falls within the cutoff limit."""
+    return age_years <= cutoff_age
+```
 - **Enforced by**: `ruff format` and `ruff check` (`E`, `W`, `F`, `I`, `N`). Sources: [PEP 8](https://peps.python.org/pep-0008/) (checked 2026-10-29), [Ruff Rules](https://docs.astral.sh/ruff/rules/) (checked 2026-10-29).
 
 ### 2. Docstrings on Modules, Classes, and Functions
@@ -38,10 +43,20 @@ def compute_age_years(birth_date: date, reference_date: date) -> int:
 - **Enforced by**: Ruff `D` rules with `convention = "google"`. Sources: [PEP 257](https://peps.python.org/pep-0257/) (checked 2026-10-29), [Google Docstrings](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings) (checked 2026-10-29).
 
 ### 3. Type Hints Everywhere
-- **Rule**: All function signatures, parameters, return types, and class attributes must have explicit type annotations. No untyped `Any` without a documented reason.
+- **Rule**: All function signatures, parameters, return types, and class attributes must have explicit type annotations. Never use untyped `Any` without a documented reason; prefer explicit types or `object` for arbitrary values.
 - **Why**: Static typing prevents `NoneType` bugs, enables static verification in CI, and self-documents data contracts.
-- **Bad**: `def parse_score(data): return data["score"]`
-- **Good**: `def parse_gate_score(raw_profile: dict[str, Any]) -> int | None:`
+- **Bad**:
+```python
+def parse_score(data):
+    return data["score"]
+```
+- **Good**:
+```python
+def parse_gate_score(raw_profile: dict[str, object]) -> int | None:
+    """Extracts GATE score from raw input mapping without untyped Any."""
+    score = raw_profile.get("gate_score")
+    return int(score) if isinstance(score, (int, str)) and str(score).isdigit() else None
+```
 - **Enforced by**: `mypy --strict`. Sources: [PEP 484](https://peps.python.org/pep-0484/) (checked 2026-10-29), [Mypy Strict](https://mypy.readthedocs.io/en/stable/command_line.html#cmdoption-mypy-strict) (checked 2026-10-29).
 
 ### 4. Booleans Read as Questions & Explicit Naming
@@ -100,11 +115,11 @@ except pydantic.ValidationError as err:
 - **Enforced by**: Peer code review. Source: `CLAUDE.md`.
 
 ### 9. Test-Driven Development (TDD) & ≥85% Branch Coverage
-- **Rule**: Every behaviour must have a test written first (red -> green -> refactor). Branch coverage must remain ≥85% across all code.
+- **Rule**: Every behaviour must have a test written first (red -> green -> refactor). CI enforces ≥85% branch coverage via `pytest --cov=gatecheck --cov-branch --cov-fail-under=85`. Local config uses `--cov=gatecheck --cov-branch` so targeted TDD runs pass without whole-repo coverage gates.
 - **Why**: Writing tests first guarantees testability, catches edge cases before commit, and prevents untested regression paths.
 - **Bad**: Writing implementation and backfilling a superficial smoke test.
 - **Good**: Write test for 28th-birthday cutoff -> confirm failure -> write minimum logic -> confirm pass -> commit.
-- **Enforced by**: `pytest --cov --cov-branch --cov-fail-under=85` in CI. Source: [pytest-cov](https://pytest-cov.readthedocs.io/en/latest/config.html) (checked 2026-10-29).
+- **Enforced by**: `pytest --cov=gatecheck --cov-branch --cov-fail-under=85` in CI. Source: [pytest-cov](https://pytest-cov.readthedocs.io/en/latest/config.html) (checked 2026-10-29).
 
 ### 10. Code Health & Review Standards
 - **Rule**: Every review must evaluate whether the change improves overall code health. Reviewers must provide technical justifications. Non-blocking suggestions start with `Nit:`.
@@ -158,15 +173,13 @@ select = [
 convention = "google"
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["S101"]  # S101 allows standard pytest assert statements in tests
+"tests/**" = ["S101"]  # S101 allows standard pytest assert statements in test trees
 
 [tool.mypy]
 python_version = "3.13"
 strict = true
-warn_return_any = true
-warn_unused_configs = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--cov=gatecheck --cov-branch --cov-fail-under=85"
+addopts = "--cov=gatecheck --cov-branch"
 ```

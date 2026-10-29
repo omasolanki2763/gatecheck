@@ -11,13 +11,21 @@ Governs all Python code, tests, and reviews in GateCheck. Followed by all agents
 - **Good**:
 ```python
 def is_age_eligible(age_years: int, cutoff_age: int) -> bool:
-    """Checks whether the applicant age falls within the cutoff limit."""
+    """Checks whether candidate age falls within the cutoff limit.
+
+    Args:
+        age_years: Candidate age in completed whole years.
+        cutoff_age: Maximum allowable age specified in the notice.
+
+    Returns:
+        True if applicant age is less than or equal to cutoff; False otherwise.
+    """
     return age_years <= cutoff_age
 ```
 - **Enforced by**: `ruff format` and `ruff check` (`E`, `W`, `F`, `I`, `N`). Sources: [PEP 8](https://peps.python.org/pep-0008/) (checked 2026-10-29), [Ruff Rules](https://docs.astral.sh/ruff/rules/) (checked 2026-10-29).
 
 ### 2. Docstrings on Modules, Classes, and Functions
-- **Rule**: Every module, class, and function must have a docstring following Google Python Style Guide convention detailing what it does, `Args:`, `Returns:`, and `Raises:`.
+- **Rule**: Every module, class, and function must have a docstring following Google Python Style Guide convention detailing what it does, `Args:`, `Returns:`, and `Raises:` (if any).
 - **Why**: Om must understand and defend every module in interviews. Docstrings ensure every interface is self-documenting.
 - **Bad**:
 ```python
@@ -40,7 +48,7 @@ def compute_age_years(birth_date: date, reference_date: date) -> int:
         (reference_date.month, reference_date.day) < (birth_date.month, birth_date.day)
     )
 ```
-- **Enforced by**: Ruff `D` rules with `convention = "google"`. Sources: [PEP 257](https://peps.python.org/pep-0257/) (checked 2026-10-29), [Google Docstrings](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings) (checked 2026-10-29).
+- **Enforced by**: Ruff `D` rules (`convention = "google"`) enforce formatting; section completeness (`Args:`, `Returns:`, `Raises:`) is enforced via peer review (since Ruff D417 verifies arguments only after an `Args:` header is present). Sources: [PEP 257](https://peps.python.org/pep-0257/) (checked 2026-10-29), [Google Docstrings](https://google.github.io/styleguide/pyguide.html#38-comments-and-docstrings) (checked 2026-10-29).
 
 ### 3. Type Hints Everywhere
 - **Rule**: All function signatures, parameters, return types, and class attributes must have explicit type annotations. Never use untyped `Any` without a documented reason; prefer explicit types or `object` for arbitrary values.
@@ -53,11 +61,24 @@ def parse_score(data):
 - **Good**:
 ```python
 def parse_gate_score(raw_profile: dict[str, object]) -> int | None:
-    """Extracts GATE score from raw input mapping without untyped Any."""
-    score = raw_profile.get("gate_score")
-    return int(score) if isinstance(score, (int, str)) and str(score).isdigit() else None
+    """Extracts candidate GATE score from a raw deserialized input dictionary.
+
+    Args:
+        raw_profile: Deserialized profile dictionary mapping keys to values.
+
+    Returns:
+        Integer score if valid and present; None otherwise.
+    """
+    score_value = raw_profile.get("gate_score")
+    if score_value is None:
+        return None
+    if isinstance(score_value, int):
+        return score_value
+    if isinstance(score_value, str) and score_value.isdigit():
+        return int(score_value)
+    return None
 ```
-- **Enforced by**: `mypy --strict`. Sources: [PEP 484](https://peps.python.org/pep-0484/) (checked 2026-10-29), [Mypy Strict](https://mypy.readthedocs.io/en/stable/command_line.html#cmdoption-mypy-strict) (checked 2026-10-29).
+- **Enforced by**: `mypy --strict` (static type conformance; explicit `Any` is not disallowed by strict and is enforced via peer review). Sources: [PEP 484](https://peps.python.org/pep-0484/) (checked 2026-10-29), [Mypy Strict](https://mypy.readthedocs.io/en/stable/command_line.html#cmdoption-mypy-strict) (checked 2026-10-29).
 
 ### 4. Booleans Read as Questions & Explicit Naming
 - **Rule**: Boolean variables and functions must read as questions (`is_eligible`, `has_pwd`, `can_apply`). Never use vague variable names (`data`, `temp`, `obj`, `res`).
@@ -71,7 +92,7 @@ def parse_gate_score(raw_profile: dict[str, object]) -> int | None:
 - **Why**: Named constants clarify business intent; raw values look arbitrary and make recruitment policy updates error-prone.
 - **Bad**: `if percentage >= 60.0 and age > 28:`
 - **Good**: `if percentage >= FIRST_CLASS_MIN_PERCENT and age_years > MAX_GENERAL_AGE_LIMIT:`
-- **Enforced by**: Ruff `PLR2004` (numbers) + peer code review (strings). Source: [Ruff PLR2004](https://docs.astral.sh/ruff/rules/magic-value-comparison/) (checked 2026-10-29).
+- **Enforced by**: Ruff `PLR2004` (flags magic numbers in comparisons only; magic numbers in arithmetic, assignments, or function arguments are enforced via peer review) + peer review (strings). Source: [Ruff PLR2004](https://docs.astral.sh/ruff/rules/magic-value-comparison/) (checked 2026-10-29).
 
 ### 6. "Why" Comments on Non-Obvious Logic
 - **Rule**: Include comments explaining *why* a calculation or rule branch is taken, citing the specific brochure clause or policy reason.
@@ -83,7 +104,7 @@ max_age += 3
 ```
 - **Good**:
 ```python
-# OBC-NCL candidates receive a 3-year age relaxation per DRDO Advt 136 §1.2
+# Illustrative: DRDO Advt 136 §1.2 allows 3-year age relaxation for OBC-NCL category
 max_eligible_age = GENERAL_MAX_AGE + OBC_AGE_RELAXATION_YEARS
 ```
 - **Enforced by**: Peer code review. Source: Om's project brief (`CLAUDE.md`).
@@ -128,6 +149,30 @@ except pydantic.ValidationError as err:
 - **Good**: "Nit: Rename `lim` to `age_limit` to follow the explicit naming convention in STYLE.md §1.4."
 - **Enforced by**: Peer code review in Orca. Source: [Google Code Review Standard](https://google.github.io/eng-practices/review/reviewer/standard.html) (checked 2026-10-29).
 
+### 11. Portable File I/O & Path Handling
+- **Rule**: Always pass explicit `encoding="utf-8"` to `open()`, `Path.read_text()`, and `Path.write_text()`. Always use `pathlib.Path` instead of raw string concatenation or `os.path`.
+- **Why**: Windows defaults to legacy code pages (e.g. `cp1252`), which silently corrupt or crash on non-ASCII characters such as rupee signs (`₹`), en-dashes (`–`), or accented names in official notices during cross-platform CI (Windows + Ubuntu).
+- **Bad**:
+```python
+def load_notice(path):
+    with open(path) as f:
+        return f.read()
+```
+- **Good**:
+```python
+def load_notice_text(file_path: Path) -> str:
+    """Reads notification text using explicit UTF-8 encoding.
+
+    Args:
+        file_path: Path to the extracted text file.
+
+    Returns:
+        Full decoded notification contents.
+    """
+    return file_path.read_text(encoding="utf-8")
+```
+- **Enforced by**: Ruff `PLW1514` (unspecified-encoding; enabled via `preview = true` + `explicit-preview-rules = true`) + peer review. Source: [Ruff PLW1514](https://docs.astral.sh/ruff/rules/unspecified-encoding/) (checked 2026-10-29).
+
 ---
 
 ## 2. Git & Testing Conventions
@@ -136,7 +181,7 @@ except pydantic.ValidationError as err:
 - **Commit Messages**: Conventional Commits only (`feat:`, `fix:`, `test:`, `docs:`, `refactor:`, `ci:`, `chore:`). One logical change per commit.
 - **Branch Naming**: `task/T-0xx-name` (or `task/Sxx-name`).
 - **Merge Method**: Rebase merge only (`gh pr merge --rebase`). Linear history on `main` is strictly enforced.
-- **Attribution**: Commits must be authored by active git identity (`omasolanki2763`). Never add `Co-Authored-By` lines.
+- **Attribution**: Commits must be authored by active repo-local git identity: `omasolanki2763 <251193805+omasolanki2763@users.noreply.github.com>`. Check with `git config --local user.email` before the first commit in any fresh clone or worktree (global git config points to a personal account). Never add `Co-Authored-By` lines.
 
 ### Test Rules
 - **File & Function Naming**: Tests live in `tests/test_<module>.py`. Test functions named `test_<function_or_scenario>_<expected_outcome>()` (e.g. `test_age_on_cutoff_date_returns_met()`).
@@ -155,25 +200,28 @@ line-length = 100
 target-version = "py313"
 
 [tool.ruff.lint]
+preview = true
+explicit-preview-rules = true
 select = [
-    "E",      # pycodestyle errors
-    "W",      # pycodestyle warnings
-    "F",      # Pyflakes
-    "I",      # isort
-    "N",      # pep8-naming
-    "D",      # pydocstyle
-    "UP",     # pyupgrade
-    "B",      # flake8-bugbear
-    "BLE",    # flake8-blind-except
-    "S",      # flake8-bandit
-    "PLR2004" # magic-value-comparison
+    "E",        # pycodestyle errors
+    "W",        # pycodestyle warnings
+    "F",        # Pyflakes
+    "I",        # isort
+    "N",        # pep8-naming
+    "D",        # pydocstyle
+    "UP",       # pyupgrade
+    "B",        # flake8-bugbear
+    "BLE",      # flake8-blind-except
+    "S",        # flake8-bandit
+    "PLR2004",  # magic-value-comparison
+    "PLW1514",  # unspecified-encoding (preview rule)
 ]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["S101"]  # S101 allows standard pytest assert statements in test trees
+"tests/**" = ["S101", "PLR2004"]  # S101 allows assert; PLR2004 allows comparison literals in test assertions
 
 [tool.mypy]
 python_version = "3.13"

@@ -1,7 +1,5 @@
 """Smoke test module for package initialization and version verification."""
 
-import sys
-
 import gatecheck
 
 

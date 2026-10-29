@@ -1,6 +1,8 @@
-"""GateCheck core package.
+"""GateCheck: Document screening and eligibility verification pipeline."""
 
-Automated eligibility verification pipeline for GATE-qualified candidates.
-"""
+from importlib.metadata import PackageNotFoundError, version
 
-__version__ = "0.1.0"
+try:
+    __version__: str = version("gatecheck")
+except PackageNotFoundError:
+    __version__ = "0.1.0"

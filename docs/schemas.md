@@ -92,7 +92,7 @@ Represents a student applicant applying for a recruitment vacancy or postgraduat
 
 | Field Name | Type | Constraints / Defaults | Plain-Language Description |
 |---|---|---|---|
-| `candidate_id` | `str` | Format: `PROF-[ID]` (e.g. `PROF-01-BASELINE-OM`) | Unique applicant profile identifier. |
+| `candidate_id` | `str` | Format: `PROF-[ID]` (e.g. `PROF-01-ANONYMOUS-PARTIAL`) | Unique applicant profile identifier. |
 | `full_name` | `str` | Non-empty | Candidate full name. |
 | `dob` | `date | None` | ISO format `YYYY-MM-DD` (Optional for draft/placeholder profiles) | Date of birth used for exact age calculation at cutoff. If null, age criteria evaluate to `NEEDS_REVIEW`. |
 | `category` | `CategoryEnum | None` | `GENERAL`, `OBC_NCL`, `SC`, `ST`, `EWS` (Optional for draft) | Social reservation category for relaxation eligibility. If null, evaluated as General without relaxation. |
@@ -216,13 +216,13 @@ Observability record captured per pipeline step in `TraceSink` (written to raw J
 
 ## 5. Provenance Record (`gatecheck.schemas.provenance`)
 
-Tracks ground truth label auditing and human verification per `CLAUDE.md` and `D-007`.
+Tracks ground truth label auditing and verification per `WORKFLOW.md`, `CLAUDE.md`, and `D-007`.
 
 | Field Name | Type | Constraints | Plain-Language Description |
 |---|---|---|---|
 | `drafted_by` | `str` | Non-empty (e.g. `opencode/big-pickle`) | Model/agent identity that drafted the initial criteria and verdicts. |
-| `checked_by` | `str` | Exact string: `Om` | Human auditor who verified the label against the source PDF. |
-| `check_date` | `date` | ISO format `YYYY-MM-DD` | Date of human verification. |
-| `was_modified_by_om` | `bool` | `True` or `False` | Whether Om modified the drafted label during audit. |
-| `original_draft_value` | `str | None` | Populated if `was_modified_by_om=True` | Original value prior to Om's correction (retained for labeller error tracking). |
-| `minutes_spent` | `int` | $\ge 0$ | Exact minutes spent by Om checking the document against the PDF. |
+| `checked_by` | `str | None` | E.g. `claude-code`, peer reviewer, or `Om` (null if pending audit) | Auditor identity that verified the label quotes and verdicts against the source PDF. |
+| `check_date` | `date | None` | ISO format `YYYY-MM-DD` | Date of audit verification. |
+| `was_modified_by_om` | `bool | None` | `True`, `False`, or null in draft | Whether the draft was modified during audit/review (retained for provenance compatibility). |
+| `original_draft_value` | `str | None` | Populated if modified in audit | Original value prior to auditor correction (retained for labeller error tracking). |
+| `minutes_spent` | `int | None` | $\ge 0$ | Verification and audit inspection time in minutes. |

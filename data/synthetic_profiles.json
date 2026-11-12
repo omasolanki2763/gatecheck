@@ -1,5 +1,41 @@
 [
   {
+    "candidate_id": "PROF-01-ANONYMOUS-PARTIAL",
+    "full_name": "Sample Candidate",
+    "dob": null,
+    "category": null,
+    "category_certificate_issue_date": null,
+    "is_indian_citizen": true,
+    "is_pwd": false,
+    "pwd_disability_percent": 0.0,
+    "pwd_category": "NONE",
+    "is_iit_graduate": false,
+    "qualifications": [
+      {
+        "degree_title": "B.Tech",
+        "discipline": "Computer Science & Engineering",
+        "percentage": null,
+        "cgpa": null,
+        "cgpa_scale": 10.0,
+        "university_conversion_formula": null,
+        "is_first_class": null,
+        "is_appearing": false,
+        "expected_completion_date": null
+      }
+    ],
+    "gate_records": [
+      {
+        "year": 2026,
+        "paper_code": "CS",
+        "score": 0,
+        "marks": 0.0,
+        "all_india_rank": null,
+        "is_qualified": true
+      }
+    ],
+    "experience_months": 0
+  },
+  {
     "candidate_id": "PROF-02-AGE-BOUNDARY-EXACT",
     "full_name": "Aarav Sharma",
     "dob": "2000-08-01",
@@ -32,7 +68,8 @@
         "is_qualified": true
       }
     ],
-    "experience_months": 12
+    "experience_months": 12,
+    "category_certificate_issue_date": null
   },
   {
     "candidate_id": "PROF-03-RELAXATION-STACKING",
@@ -67,7 +104,8 @@
         "is_qualified": true
       }
     ],
-    "experience_months": 24
+    "experience_months": 24,
+    "category_certificate_issue_date": null
   },
   {
     "candidate_id": "PROF-04-FINAL-YEAR-APPEARING",
@@ -102,7 +140,8 @@
         "is_qualified": true
       }
     ],
-    "experience_months": 0
+    "experience_months": 0,
+    "category_certificate_issue_date": "2025-05-15"
   },
   {
     "candidate_id": "PROF-05-CGPA-PERCENT-CONFLICT",
@@ -137,7 +176,8 @@
         "is_qualified": true
       }
     ],
-    "experience_months": 6
+    "experience_months": 6,
+    "category_certificate_issue_date": null
   },
   {
     "candidate_id": "PROF-06-BRANCH-EQUIVALENCE",
@@ -172,7 +212,8 @@
         "is_qualified": true
       }
     ],
-    "experience_months": 0
+    "experience_months": 0,
+    "category_certificate_issue_date": null
   },
   {
     "candidate_id": "PROF-07-EXPIRED-GATE-YEAR",
@@ -207,7 +248,8 @@
         "is_qualified": true
       }
     ],
-    "experience_months": 36
+    "experience_months": 36,
+    "category_certificate_issue_date": null
   },
   {
     "candidate_id": "PROF-08-IIT-BTECH-EXEMPTION",
@@ -233,7 +275,8 @@
       }
     ],
     "gate_records": [],
-    "experience_months": 0
+    "experience_months": 0,
+    "category_certificate_issue_date": null
   },
   {
     "candidate_id": "PROF-09-NON-INDIAN-CITIZEN",
@@ -268,7 +311,8 @@
         "is_qualified": true
       }
     ],
-    "experience_months": 0
+    "experience_months": 0,
+    "category_certificate_issue_date": null
   },
   {
     "candidate_id": "PROF-10-SUB-BENCHMARK-PWD",
@@ -303,6 +347,7 @@
         "is_qualified": true
       }
     ],
-    "experience_months": 18
+    "experience_months": 18,
+    "category_certificate_issue_date": null
   }
 ]

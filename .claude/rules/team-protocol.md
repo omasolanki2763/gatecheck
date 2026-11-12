@@ -26,7 +26,7 @@ Set by Om. Governs orchestration, roles, peer review, and communication for Gate
 Terminal handles **change whenever a terminal or session is restarted**. At the start of every new session:
 
 1. Read this whole file, then `CLAUDE.md`, then the **last ~5 entries** of `team/decision-log.md`
-   (not the whole log) to see where work stopped. Check `docs/WORKFLOW.md` for task sequence.
+   (not the whole log) to see where work stopped. Check `docs/WORKFLOW.md` for which task is current.
 2. Find the live handles dynamically: `orca terminal list --json` → match each terminal's `agentIdentity`
    (`antigravity`, `opencode`, `claude`) and `worktreePath` (`C:/Users/omsol/dev/gatecheck`).
 3. Tell your peer you are back with your current handle (send + wake, steps 1-2 below). Include your context percentage.
@@ -44,14 +44,14 @@ Terminal handles are discovered dynamically via `orca terminal list --json` (mat
    Always report your context percentage in status messages (e.g., `Context: ~15 pct`).
 2. **Wake:** The other agent only reads when prompted. Wake it after sending:
    `orca terminal send --terminal <OTHER handle> --text "New peer message: run orca orchestration check --terminal <OTHER handle> --json" --enter`
-3. **Wake gotchas:** If `orca terminal send` returns `agent_prompt_blocked`, send `--text` and `--enter` as two separate calls:
+3. **Wake gotchas:** If `orca terminal send` returns `agent_prompt_blocked` or `terminal_not_writable`, use `--retry-request` or send `--text` and `--enter` as two separate calls:
    - `orca terminal send --terminal <OTHER handle> --text "New peer message: run orca orchestration check --terminal <OTHER handle> --json"`
    - `orca terminal send --terminal <OTHER handle> --enter`
 4. **Git Bash / MSYS note:** When running Orca CLI commands from Git Bash or MSYS, set `MSYS_NO_PATHCONV=1` (or prepend `MSYS_NO_PATHCONV=1`)
    to prevent Git Bash from mangling flag arguments containing slashes or colons (such as `run:run_...` or Windows paths).
 5. **Check:** Read your own messages: `orca orchestration check --terminal <YOUR handle> --json`
-6. **Communication problem** (send/check errors, peer silent >10 min, stuck in an unresolvable loop): send Claude ONE message with the exact error text:
-   `orca orchestration send --to run:run_f4a5b3f23883 --type escalation --subject "Comms issue: <short>" --body "<exact error / what happened>"`
+6. **Communication problem** (send/check errors, peer silent >10 min, stuck in an unresolvable loop): send Claude ONE message (use `--type status` to avoid `sender_not_assignee` dispatch errors):
+   `orca orchestration send --to run:run_f4a5b3f23883 --type status --subject "Comms issue: <short>" --body "<exact error / what happened>"`
    (The warning "live terminal-only mailbox ... not durable" is normal — ignore it.)
 
 ## Review rules — Evidence-based debate of facts
@@ -75,7 +75,7 @@ Terminal handles are discovered dynamically via `orca terminal list --json` (mat
 - Work is partitioned onto task branches (`task/<name>`). No simultaneous editing of the same files.
 - Before committing: ensure `git config --local user.email` is set to `251193805+omasolanki2763@users.noreply.github.com`.
 - Use Conventional Commits (`feat:`, `fix:`, `docs:`, `test:`, `ci:`, `refactor:`, `chore:`).
-- One Conventional Commit per file. No `Co-Authored-By` lines.
+- One Conventional Commit per file on multi-file setup/doc tasks; code implementation follows the TDD loop (failing test commit, implementation commit, tidy commit). No `Co-Authored-By` lines.
 - Linear history: Rebase merge only (`gh pr merge --rebase`).
 - Pull requests require green CI on both `ubuntu-latest` and `windows-latest` before merge.
 

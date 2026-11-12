@@ -35,8 +35,9 @@ Facts checked 2026-10-28 (pre-S1 state):
    History builds up naturally.
 4. The owner opens a PR, which is needed for CI and branch protection.
 5. CI must be green.
-6. The review happens **in Orca**. Reviewer replies per point ACCEPT / DEFEND, max 3 rounds, then
-   gives a verdict: PASS, or CHANGES with the fixes still to commit.
+6. The review happens **in Orca**. Reviewer replies per point with evidence (command output, URL,
+   CI log, test). A logical debate of facts between equals: stronger facts win, no round limit
+   (iterate until no doubt is left). Then gives a verdict: PASS, or CHANGES with the fixes still to commit.
 7. On PASS: the reviewer runs `gh pr merge --rebase`, so `main` stays one straight line.
 8. Claude runs the test command on `main` before the next task starts. Claude never trusts
    "tests pass" in a report.
@@ -55,8 +56,8 @@ Not critical, so no Claude review: docs wording, test fixtures, UI layout, refac
 data.
 
 **Decisions.**
-- Whoever proposes a decision posts it to both others in Orca, and they debate.
-- Max 3 rounds; then Claude decides and writes down both positions.
+- Whoever proposes a decision posts it to both others in Orca, and they debate facts with evidence.
+- Debate continues until resolved; in pure-judgement deadlocks, Claude decides and writes down both positions.
 - The result is logged in `team/decision-log.md`.
 - `OM-DECIDES` becomes `CLAUDE-DECIDES`.
 

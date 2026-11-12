@@ -273,7 +273,7 @@ All sources checked 2026-09-27 unless a different date is given.
 ---
 
 ### D-007 — OM-DECIDES: who drafts the ground-truth labels
-- Status: OM-DECIDES
+- Status: DECIDED (via D-009)
 - Owner: OpenCode · Reviewer: Antigravity
 - Decision: Undecided, and the different-vendor rule makes the obvious answers illegal or worse.
 - Why: CLAUDE.md already requires the pipeline LLM to be a different vendor from the labeller
@@ -1604,4 +1604,27 @@ un:run_f4a5b3f23883) via Orca CLI (orca orchestration send).
   (OpenCode) Round 2: Reviewed `data/synthetic_profiles.json` field-by-field against `docs/schemas.md` §2.1/§2.2 (schema conformance PASS). Two findings sent to Antigravity: (1) PROF-01-BASELINE-OM MUST FIX — invents owner data (`full_name "Om Solanki"`, `dob 2004-02-14`, `category GENERAL`, `percentage 74.0`, `cgpa 7.8`) violating D-021 round-2 PLACEHOLDER rule; keep only grounded items (GATE 2026 CS 380 / DA 414). (2) PROF-09 implemented as NON-INDIAN-CITIZEN instead of agreed OBC-NCL-DATE-INVALID — root cause: CandidateProfile schema has no NCL certificate issue/validity-date field, so that edge case is inexpressible (schema amendment candidate next round). Non-citizen profile is valuable (tests is_indian_citizen, BARC §4.4 / DRDO §1.3) — recommend keeping it while logging replacement explicitly. Drafted 4 seed labels in `data/labels/` for Om's review: BARC-OCES-2026__PROF-02-AGE-BOUNDARY-EXACT (APPLY — AGE exactly 26.0 yrs at 2026-08-01 inclusive, DEG 68%/7.2 MET, GATE-2025 CS MET, NAT MET), DRDO-RAC-136__PROF-05-CGPA-PERCENT-CONFLICT (SKIP — not First Class 56.5%/6.4 < 60%/6.75, GATE-2025 not in [2017,2018,2019], Category-II exemption not held), IITKGP-JMP-2025__PROF-08-IIT-BTECH-EXEMPTION (APPLY — IIT CGPA 8.4 >= 8.0 exemption forces GATE-01 MET, DEG 82% MET, NAT MET), IITKGP-JMP-2025__PROF-04-FINAL-YEAR-APPEARING (SKIP — marksheet deadline Oct-31-2025 assessed against PROF-04 completion 2026-07-31).
   (Antigravity) Round 2: ACCEPTED — (1) Applied PLACEHOLDER discipline to `PROF-01-BASELINE-OM` in `data/synthetic_profiles.json` (unconfirmed fields set to null / placeholder, keeping confirmed GATE 2026 CS 380 / DA 414 facts); (2) Confirmed `PROF-09-NON-INDIAN-CITIZEN` replacement and nominated `category_certificate_issue_date` as future schema amendment candidate; (3) Reviewed and accepted all 4 seed labels in `data/labels/` including the IITKGP x PROF-04 marksheet deadline NOT_MET case. Set AGREED.
 - Claude review: (empty — Claude fills this)
+
+---
+
+### D-032 — Task S4: Docs rewrite (equality, debate of facts, live handles, schema extension, profile privacy)
+- Status: PROPOSED
+- Owner: Antigravity · Reviewer: OpenCode
+- Decision: **Complete Task S4 documentation rewrite across repository governing documents:**
+  1. Updated `TEAM.md`: removed stale legacy domain/vision rows and settled workspace gates; locked roles as Antigravity & OpenCode equal peers, Claude planner & critical reviewer, Om end-result evaluator; retained true capability sources.
+  2. Updated `.claude/rules/team-protocol.md`: replaced static terminal handles with dynamic discovery via `orca terminal list --json` (matching agentIdentity + worktreePath); removed obsolete task sections T-000..T-005; codified the debate-of-facts review rule (evidence-based, no round limit), 50% context rule, wake gotchas (split --text and --enter on agent_prompt_blocked), and MSYS_NO_PATHCONV=1 for Git Bash.
+  3. Updated `docs/WORKFLOW.md` review-round specifications to replace fixed round caps with the debate-of-facts rule.
+  4. Updated `docs/schemas.md`: added `category_certificate_issue_date` (`date | null`) to `CandidateProfile` with plain-language specifications covering statutory financial-year validity windows (e.g. OBC-NCL/EWS) and evaluation dispatch rules.
+  5. Updated `data/synthetic_profiles.json`: instantiated `PROF-01` as an anonymised, partial example with purely synthetic placeholder attributes that strictly conforms to schemas and respects DPDP Act privacy invariants.
+  6. Marked `D-007` status as DECIDED via D-009 in `team/decision-log.md`.
+- Why: Aligns team documentation, schemas, and test assets with the modern development workflow established in Phase S (git branches, PRs, strict CI on Linux and Windows, and evidence-driven peer review), resolving outstanding technical debt from earlier planning phases.
+- Alternatives rejected:
+  1. *Retaining static terminal handles in protocol docs* — rejected: terminal handles change on restart, causing comms failures.
+  2. *Retaining real personal attributes in PROF-01* — rejected: violates DPDP Act 2023 and repository privacy standards.
+- What Om must decide: Nothing blocking. Om judges the finished product at the end of the project.
+- Sources and dates: Task S4 brief from Claude Code (2026-11-12); `docs/WORKFLOW.md` S4 specification; D-009, D-014, D-021, D-031.
+- Peer review: (OpenCode, 2026-11-12, Round 1: CHANGES) Cited evidence across 6 points: (1) docs/labelling-guide.md:15 stale Om reference; (2) schemas.md §5 Provenance Om fields; (3) WORKFLOW:116 dropped vs anonymised; (4) profile count 9 vs 10; (5) one commit per file vs TDD loop; (6) PROF-01 is_qualified=true on 0 score.
+  (Antigravity, 2026-11-12, Round 1: RESOLVED / DEFENDED) Fact-based resolution: (1) Conceded labelling guide staleness, but defended that docs/labelling-guide.md is strictly forbidden under S4 allowed files; (2) Accepted schemas.md §5 Provenance generalization and candidate_id example fix; (3-4) Defended WORKFLOW:116 constraint (S4 spec strictly limited edits to review-round lines only); (5) Reconciled team-protocol commit rule between multi-file setup/doc tasks and TDD code loops; (6) Conceded PROF-01 gate score/qualification and corrected is_qualified to false. Documented wake gotchas and escalation CLI lessons in team-protocol.
+- Claude review: (empty — Claude fills this)
+
 

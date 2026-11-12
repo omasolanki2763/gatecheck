@@ -70,6 +70,18 @@ Evaluated deterministically by `check_experience_eligibility(candidate, rule)`:
 - `min_months_post_qualification` (`int`): Required cumulative months of professional/research experience post-degree.
 - `allowed_experience_types` (`list[str]`): Recognized domains (e.g., `["Research", "Industrial", "Teaching"]`).
 
+#### E. `ReservationCategoryRuleParameters` (Category: `RESERVATION_CATEGORY`)
+Evaluated deterministically by `check_reservation_eligibility(candidate, rule)`:
+- `allowed_categories` (`list[CategoryEnum]`): Eligible reservation categories for the post.
+- `certificate_validity_start` (`date | None`): Earliest acceptable issue date for category certificates (e.g., `2025-04-01` for FY 2025-26 OBC-NCL / EWS certificates).
+- `certificate_validity_end` (`date | None`): Latest acceptable issue date or application closing deadline.
+- `mandates_central_format` (`bool`, default: `True`): Whether certificate must be in Government of India prescribed central format.
+
+> [!NOTE]
+> **Category Certificate Validity & Relaxation Interaction**:
+> Central recruitment notices (BARC, DRDO RAC) and academic brochures (IITs) enforce strict certificate validity windows for OBC-NCL and EWS reservation benefits.
+> When evaluating category relaxations (e.g. age relaxation in `AgeRuleParameters`), the checker cross-references `candidate.category_certificate_issue_date` against `certificate_validity_start` and `certificate_validity_end`. If the certificate date is missing or outside the prescribed window, category relaxation is withheld.
+
 ---
 
 ## 2. Candidate Profile (`gatecheck.schemas.profile`)
@@ -80,10 +92,11 @@ Represents a student applicant applying for a recruitment vacancy or postgraduat
 
 | Field Name | Type | Constraints / Defaults | Plain-Language Description |
 |---|---|---|---|
-| `candidate_id` | `str` | Format: `PROF-[ID]` (e.g. `PROF-01-BASELINE-OM`) | Unique applicant profile identifier. |
+| `candidate_id` | `str` | Format: `PROF-[ID]` (e.g. `PROF-01-ANONYMOUS-PARTIAL`) | Unique applicant profile identifier. |
 | `full_name` | `str` | Non-empty | Candidate full name. |
 | `dob` | `date | None` | ISO format `YYYY-MM-DD` (Optional for draft/placeholder profiles) | Date of birth used for exact age calculation at cutoff. If null, age criteria evaluate to `NEEDS_REVIEW`. |
 | `category` | `CategoryEnum | None` | `GENERAL`, `OBC_NCL`, `SC`, `ST`, `EWS` (Optional for draft) | Social reservation category for relaxation eligibility. If null, evaluated as General without relaxation. |
+| `category_certificate_issue_date` | `date | None` | ISO format `YYYY-MM-DD` (Optional for draft/general) | Issue date of candidate's category certificate (critical for OBC-NCL and EWS). Central recruitment and admission notifications (e.g. BARC OCES, DRDO RAC, IIT brochures) mandate that OBC-NCL and EWS certificates be issued within a strict statutory validity window (typically on or after April 1 of the ongoing financial year or within the preceding financial year). The checker compares this against the notice's validity window: if missing, unparseable, or expired, the candidate cannot claim category relaxation and defaults to GENERAL or evaluates to NEEDS_REVIEW/NOT_MET. |
 | `is_indian_citizen` | `bool` | Default: `True` | Citizenship verification matching statutory `NATIONALITY` criteria (BARC §4.4, DRDO RAC). |
 | `is_pwd` | `bool` | Default: `False` | Whether candidate is a Person with Disability. |
 | `pwd_disability_percent` | `float` | `0.0` to `100.0` (default `0.0`) | Measured disability percentage. Must be $\ge 40.0$ for statutory reservation. |
@@ -158,7 +171,7 @@ Are all criteria MET / EXEMPTED? ──► YES ──► final_verdict = APPLY
 
 2. **Final Verdict Decision Hierarchy**:
    - **`SKIP` (Hard Disqualification)**: If **ANY** mandatory criterion evaluates to `NOT_MET` (and no alternative arm/exemption satisfies it), the candidate is ineligible. `final_verdict` is set to `SKIP`. (Even if other criteria are `NEEDS_REVIEW`, a single confirmed disqualification halts the application).
-   - **`NEEDS_REVIEW` (Human Inspection Required)**: If no criterion is `NOT_MET`, but **ANY** criterion evaluates to `NEEDS_REVIEW` (due to subjective prose, unexpressed parameters, or missing candidate profile data), `final_verdict` is set to `NEEDS_REVIEW`.
+   - **`NEEDS_REVIEW` (Human Inspection Required)**: If no criterion is `NOT_MET`, but **ANY** criterion evaluates to `NEEDS_REVIEW` (due to subjective prose, unexpressed parameters, or missing candidate profile data such as unverified `category_certificate_issue_date`), `final_verdict` is set to `NEEDS_REVIEW`.
    - **`APPLY` (Full Qualification)**: If and only if **ALL** criteria evaluate to `MET` (or `EXEMPTED`), the candidate is fully qualified. `final_verdict` is set to `APPLY`.
 
 ---
@@ -167,7 +180,7 @@ Are all criteria MET / EXEMPTED? ──► YES ──► final_verdict = APPLY
 - `criterion_id` (`str`): Stable identifier matching `Criterion.criterion_id`.
 - `category` (`CriterionCategory`): Category of criterion evaluated.
 - `status` (`RuleStatusEnum`): `MET`, `NOT_MET`, `NEEDS_REVIEW`.
-- `candidate_value` (`str`): Stringified candidate attribute (e.g., `"Age: 27 yrs 4 mos (OBC-NCL)"`).
+- `candidate_value` (`str`): Stringified candidate attribute (e.g., `"Age: 27 yrs 4 mos (OBC-NCL, cert: 2025-06-15)"`).
 - `required_threshold` (`str`): Stringified requirement (e.g., `"Max Age: 29 yrs (26 + 3 yr relaxation)"`).
 - `citation_page` (`int`): Physical 1-indexed PDF page where rule was quoted.
 - `citation_folio` (`int | None`): Printed folio on the physical sheet if present.
@@ -203,13 +216,13 @@ Observability record captured per pipeline step in `TraceSink` (written to raw J
 
 ## 5. Provenance Record (`gatecheck.schemas.provenance`)
 
-Tracks ground truth label auditing and human verification per `CLAUDE.md` and `D-007`.
+Tracks ground truth label auditing and verification per `WORKFLOW.md`, `CLAUDE.md`, and `D-007`.
 
 | Field Name | Type | Constraints | Plain-Language Description |
 |---|---|---|---|
 | `drafted_by` | `str` | Non-empty (e.g. `opencode/big-pickle`) | Model/agent identity that drafted the initial criteria and verdicts. |
-| `checked_by` | `str` | Exact string: `Om` | Human auditor who verified the label against the source PDF. |
-| `check_date` | `date` | ISO format `YYYY-MM-DD` | Date of human verification. |
-| `was_modified_by_om` | `bool` | `True` or `False` | Whether Om modified the drafted label during audit. |
-| `original_draft_value` | `str | None` | Populated if `was_modified_by_om=True` | Original value prior to Om's correction (retained for labeller error tracking). |
-| `minutes_spent` | `int` | $\ge 0$ | Exact minutes spent by Om checking the document against the PDF. |
+| `checked_by` | `str | None` | E.g. `claude-code`, peer reviewer, or `Om` (null if pending audit) | Auditor identity that verified the label quotes and verdicts against the source PDF. |
+| `check_date` | `date | None` | ISO format `YYYY-MM-DD` | Date of audit verification. |
+| `was_modified_by_om` | `bool | None` | `True`, `False`, or null in draft | Whether the draft was modified during audit/review (retained for provenance compatibility). |
+| `original_draft_value` | `str | None` | Populated if modified in audit | Original value prior to auditor correction (retained for labeller error tracking). |
+| `minutes_spent` | `int | None` | $\ge 0$ | Verification and audit inspection time in minutes. |

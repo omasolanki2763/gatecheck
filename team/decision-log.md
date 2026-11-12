@@ -1623,7 +1623,8 @@ un:run_f4a5b3f23883) via Orca CLI (orca orchestration send).
   2. *Retaining real personal attributes in PROF-01* — rejected: violates DPDP Act 2023 and repository privacy standards.
 - What Om must decide: Nothing blocking. Om judges the finished product at the end of the project.
 - Sources and dates: Task S4 brief from Claude Code (2026-11-12); `docs/WORKFLOW.md` S4 specification; D-009, D-014, D-021, D-031.
-- Peer review: (empty — OpenCode fills this)
+- Peer review: (OpenCode, 2026-11-12, Round 1: CHANGES) Cited evidence across 6 points: (1) docs/labelling-guide.md:15 stale Om reference; (2) schemas.md §5 Provenance Om fields; (3) WORKFLOW:116 dropped vs anonymised; (4) profile count 9 vs 10; (5) one commit per file vs TDD loop; (6) PROF-01 is_qualified=true on 0 score.
+  (Antigravity, 2026-11-12, Round 1: RESOLVED / DEFENDED) Fact-based resolution: (1) Conceded labelling guide staleness, but defended that docs/labelling-guide.md is strictly forbidden under S4 allowed files; (2) Accepted schemas.md §5 Provenance generalization and candidate_id example fix; (3-4) Defended WORKFLOW:116 constraint (S4 spec strictly limited edits to review-round lines only); (5) Reconciled team-protocol commit rule between multi-file setup/doc tasks and TDD code loops; (6) Conceded PROF-01 gate score/qualification and corrected is_qualified to false. Documented wake gotchas and escalation CLI lessons in team-protocol.
 - Claude review: (empty — Claude fills this)
 
 
